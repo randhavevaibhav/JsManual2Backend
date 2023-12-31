@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const jsTopicSchema = mongoose.Schema(
     {
+        subTopicName:{
+            type: String,
+            required: true,
+        },
         topicName:{
             type: String,
             required: true,
