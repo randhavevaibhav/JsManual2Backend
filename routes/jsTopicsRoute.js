@@ -79,6 +79,12 @@ router.post('/newtopic', async (request, response)=>{
         );
     
     }
+
+    else if(request.body.IMPPoints.length >0 && request.body.IMPPoints.length!==undefined)
+    {
+            console.log("IMPPoints array ===> "+request.body.IMPPoints);
+            newTopic.IMPPoints = request.body.IMPPoints;
+    }
     else if(validateYouTubeUrl(request.body.videoLink))
     {
         console.log("second check up =====> ")
