@@ -57,6 +57,7 @@ router.post('/newtopic', async (request, response)=>{
             topicName: "",
             subTopicName:"",
             syntax: "",
+            explanation:"",
             videoLink:"",
             videoTitle:""
 
@@ -66,7 +67,8 @@ router.post('/newtopic', async (request, response)=>{
     // check if all the reuired fields present in the request
     if( !request.body.topicName ||
         !request.body.subTopicName ||
-        !request.body.syntax
+        !request.body.syntax ||
+        !request.body.explanation
         )
     {
         console.log("first check =====> ")
@@ -82,8 +84,20 @@ router.post('/newtopic', async (request, response)=>{
 
     else if(request.body.IMPPoints.length >0 && request.body.IMPPoints.length!==undefined)
     {
-            console.log("IMPPoints array ===> "+request.body.IMPPoints);
-            newTopic.IMPPoints = request.body.IMPPoints;
+        let tempArray = [];
+
+        request.body.IMPPoints.forEach((val)=>{
+            
+                if(val!=null&&val!=""&&val!=undefined)
+                {
+                    tempArray.push(val);
+
+                }
+        })
+
+       
+            console.log("IMPPoints array ===> "+tempArray);
+            newTopic.IMPPoints = tempArray;
     }
     else if(validateYouTubeUrl(request.body.videoLink))
     {
@@ -145,6 +159,7 @@ router.post('/newtopic', async (request, response)=>{
         newTopic.topicName=request.body.topicName;
         newTopic.subTopicName=request.body.subTopicName;
         newTopic.syntax=request.body.syntax;
+        newTopic.explanation=request.body.explanation;
 
         const Topic = await jsTopicModel.create(newTopic);
         return response.status(201).send(Topic);
