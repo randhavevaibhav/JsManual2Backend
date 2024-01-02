@@ -1,7 +1,17 @@
 import express from "express";
 import { jsTopicModel } from "../models/jsTopicsModel.js"; 
 const router = express.Router();
-
+let validationResult = true;
+const validateYouTubeUrl = (urlToParse) => {
+    if (urlToParse) {
+      let regExp =
+        /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+      if (urlToParse.match(regExp)) {
+        return true;
+      }
+    }
+    return false;
+  };
 //  const  arraySlice= new jsTopicModel({
 //         "topicName":"Array",
 //      "subTopicName":"Array slice(start,end)",
@@ -38,6 +48,111 @@ router.get('/:topicname', async (request,response)=>{
 
 
 })
+
+
+// New Route for POST to create  new topic in the database
+router.post('/newtopic', async (request, response)=>{
+    try {
+        let newTopic = {
+            topicName: "",
+            subTopicName:"",
+            syntax: "",
+            videoLink:"",
+            videoTitle:""
+
+    
+    
+        }
+    // check if all the reuired fields present in the request
+    if( !request.body.topicName ||
+        !request.body.subTopicName ||
+        !request.body.syntax
+        )
+    {
+        console.log("first check =====> ")
+        validationResult = false;
+        // if not then return 
+        return response.status(400).send(
+            {
+                message:`Send all the reuired fields: topic name, sub topic name, syntax`
+            }
+        );
+    
+    }
+    else if(validateYouTubeUrl(request.body.videoLink))
+    {
+        console.log("second check up =====> ")
+        newTopic.videoLink=request.body.videoLink;
+        if((request.body.videoTitle===""||request.body.videoTitle===undefined))
+        {
+            console.log("second check low =====> ")
+            validationResult = false;
+            
+            return response.status(400).send(
+                {
+                    message:`Please provide valid youtube title`
+                }
+            );
+            
+
+            }  
+       
+    }
+    else if((request.body.videoTitle===""||request.body.videoTitle===undefined))
+    {
+        console.log("third check up =====> ")
+        if(!validateYouTubeUrl(request.body.videoLink) && !(request.body.videoLink===""||request.body.videoLink===undefined))
+        {
+            console.log("third check low =====> ")
+            validationResult = false;
+            console.log("request.body.videoLink value =====> "+request.body.videoLink)
+            return response.status(400).send(
+                {
+                    message:`Please provide valid youtube Link`
+                }
+            );
+
+        }
+       
+
+    }
+    else if(!(request.body.videoTitle===""||request.body.videoTitle===undefined))
+    {
+        console.log("fourth check up =====> ")
+        validationResult = false;
+        newTopic.videoTitle=request.body.videoTitle;
+        if(!validateYouTubeUrl(request.body.videoLink))
+        {
+            console.log("fourth check low =====> ")
+            return response.status(400).send(
+                {
+                    message:`Please provide valid youtube Link`
+                }
+            );
+
+        }
+        
+    }
+    //else create a new topic in the database
+    if(validationResult){
+        console.log("validation passed =====> ")
+        newTopic.topicName=request.body.topicName;
+        newTopic.subTopicName=request.body.subTopicName;
+        newTopic.syntax=request.body.syntax;
+
+        const Topic = await jsTopicModel.create(newTopic);
+        return response.status(201).send(Topic);
+    }
+   
+        
+    } catch (error) {
+    
+        console.log("Error in the POST method to create new topic "+error.message);
+        response.status(500).send({message:error.message});
+        
+    }
+    
+    });
 
 export default router;
 
