@@ -12,6 +12,20 @@ const validateYouTubeUrl = (urlToParse) => {
     }
     return false;
   };
+
+  //modify accordingly
+  const JsTopicList=["Array","Promises"];
+
+
+  const checkTopic = (Ptopic) => {
+    if (JsTopicList.indexOf(Ptopic) < 0) {
+     
+
+      return false;
+    } else {
+      return true;
+    }
+  };
 //  const  arraySlice= new jsTopicModel({
 //         "topicName":"Array",
 //      "subTopicName":"Array slice(start,end)",
@@ -76,10 +90,22 @@ router.post('/newtopic', async (request, response)=>{
         // if not then return 
         return response.status(400).send(
             {
-                message:`Send all the reuired fields: topic name, sub topic name, syntax`
+                message:`Send all the reuired fields: topic name, sub topic name, syntax, explanation`
             }
         );
     
+    }
+
+    else if(!checkTopic(request.body.topicName))
+    {
+        console.log("JS topic check =====> ")
+        validationResult = false;
+        return response.status(400).send(
+            {
+                message:`topic name is not present in the JsTopic list please add it and the proceed with req.`
+            }
+        );
+
     }
 
     else if(request.body.IMPPoints.length >0 && request.body.IMPPoints.length!==undefined)
