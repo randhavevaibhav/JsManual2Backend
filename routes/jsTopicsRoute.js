@@ -14,7 +14,7 @@ const validateYouTubeUrl = (urlToParse) => {
   };
 
   //modify accordingly
-  const JsTopicList=["Array","Promises"];
+  const JsTopicList=["Array","Promises","String"];
 
 
   const checkTopic = (Ptopic) => {
