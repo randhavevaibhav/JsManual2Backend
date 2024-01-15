@@ -1,31 +1,13 @@
 import express from "express";
 import { jsTopicModel } from "../models/jsTopicsModel.js"; 
+import { checkTopic } from "../Pulic/Scripts/CheckTopic.js";
+import { validateYouTubeUrl } from "../Pulic/Scripts/ValidateYTURL.js";
 const router = express.Router();
 let validationResult = true;
-const validateYouTubeUrl = (urlToParse) => {
-    if (urlToParse) {
-      let regExp =
-        /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
-      if (urlToParse.match(regExp)) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  //modify accordingly
-  const JsTopicList=["Array","Promises","String","Object"];
 
 
-  const checkTopic = (Ptopic) => {
-    if (JsTopicList.indexOf(Ptopic) < 0) {
-     
 
-      return false;
-    } else {
-      return true;
-    }
-  };
+
 //  const  arraySlice= new jsTopicModel({
 //         "topicName":"Array",
 //      "subTopicName":"Array slice(start,end)",
@@ -43,6 +25,7 @@ const validateYouTubeUrl = (urlToParse) => {
 //     console.log(err);
 //   });
 
+//GET for getting all topics from db
 router.get('/:topicname', async (request,response)=>{
     try {
         const {topicname} = request.params;
@@ -64,7 +47,7 @@ router.get('/:topicname', async (request,response)=>{
 })
 
 
-// New Route for POST to create  new topic in the database
+// POST to create  new topic in the database
 router.post('/newtopic', async (request, response)=>{
     try {
         let newTopic = {
@@ -202,7 +185,7 @@ router.post('/newtopic', async (request, response)=>{
     });
 
 
-
+// DELTE to delete topic from database
 router.delete('/:id', async(request,response)=>{
     
         try {
