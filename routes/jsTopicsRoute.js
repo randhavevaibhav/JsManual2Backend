@@ -201,6 +201,37 @@ router.post('/newtopic', async (request, response)=>{
     
     });
 
+
+
+router.delete('/:id', async(request,response)=>{
+    
+        try {
+            const {id}  = request.params;
+    
+            const result = await jsTopicModel.findByIdAndDelete(id);
+    
+            if(!result)
+            {
+                return response.send(404).send({message: 'Topic not found'});
+    
+            }
+            else{
+    
+                return response.status(200).send(`Topic deleted successfully`);
+    
+            }
+    
+    
+            
+        } catch (error) {
+            
+            console.log(`Error in the DELETE method ${error.message}`);
+            response.status(500).send({message: error.message});
+        }
+    
+    
+    });
+
 export default router;
 
 
